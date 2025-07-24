@@ -1,0 +1,7 @@
+accelerate
+diffusers
+flask
+ollama
+pillow
+torch
+transformers

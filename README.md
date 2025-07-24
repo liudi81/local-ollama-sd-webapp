@@ -27,8 +27,8 @@
 ## 🛠️ Installation
 
 ```bash
-git clone https://github.com/yourusername/ollama-sd-webapp.git
-cd ollama-sd-webapp
+git clone https://github.com/liudi81/local-ollama-sd-webapp.git
+cd local-ollama-sd-webapp
 
 # Set up a virtual environment (optional but recommended)
 python -m venv venv
@@ -41,5 +41,13 @@ pip install -r requirements.txt
 ollama pull tinyllama
 
 # Run the app
-python app.py
+python3 app.py
+
+## 🧠 Lessons learned
+  - Ollama models (like TinyLlama) only generate text — they do not create real images.
+  - When LLMs return image links (e.g. Imgur), they are usually made up and not connected to your Stable Diffusion output.
+  - Image generation with Stable Diffusion on CPU is slow; smaller resolutions (like 256×256) help. But the quality for 256x256 images is not good, and it failed sometimes.
+  - Some models (like `llama3`) require more memory than lightweight devices can handle.
+  - You can combine image and chat in a shared session, but need logic to distinguish between the two tasks.
+  - It's quite slow to use CPUs in my laptop to generate images. It takes 7+ minutes to generate one 512x512 image.
 

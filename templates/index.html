@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Stable Diffusion + Ollama Chat</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      margin: 2em;
+    }
+
+    #chat {
+      border: 1px solid #ccc;
+      padding: 1em;
+      height: 300px;
+      overflow-y: auto;
+      margin-bottom: 1em;
+    }
+
+    #input-area {
+      display: flex;
+      gap: 0.5em;
+    }
+
+    img {
+      max-width: 100%;
+      margin-top: 1em;
+    }
+
+    .user {
+      color: blue;
+    }
+
+    .bot {
+      color: green;
+    }
+  </style>
+</head>
+
+<body>
+  <h2>🧠💬 Chat with Ollama + Stable Diffusion 🎨</h2>
+
+  <div id="chat"></div>
+
+  <div id="input-area">
+    <input type="text" id="message" placeholder="Enter your prompt..." style="flex:1" />
+    <button onclick="send()">Send</button>
+  </div>
+
+  <div id="image-container"></div>
+
+  <script>
+    async function send() {
+      const msg = document.getElementById("message").value;
+      if (!msg) return;
+      document.getElementById("message").value = "";
+
+      appendMessage("🧑 You", msg, "user");
+
+      const chatRes = await fetch("/chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ message: msg }),
+      });
+      const chatData = await chatRes.json();
+      appendMessage("🤖 Ollama", chatData.reply, "bot");
+
+      const genRes = await fetch("/generate", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ prompt: msg }),
+      });
+      const genData = await genRes.json();
+
+      const img = document.createElement("img");
+      img.src = genData.image_url + "?t=" + Date.now();
+      document.getElementById("image-container").appendChild(img);
+    }
+
+    function appendMessage(sender, text, cls) {
+      const div = document.createElement("div");
+      div.className = cls;
+      div.innerHTML = `<strong>${sender}:</strong> ${text}`;
+      document.getElementById("chat").appendChild(div);
+      document.getElementById("chat").scrollTop = 99999;
+    }
+  </script>
+</body>
+
+</html>
